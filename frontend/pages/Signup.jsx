@@ -6,12 +6,13 @@ import { InputBox } from '../components/InputBox'
 import { Button } from '../components/Button'
 import { ButtomWarning } from '../components/ButtonWarning'
 import axios from 'axios'
-
+import { Navigate, useNavigate } from 'react-router-dom'
 export const Signup = () => {
   const [firstName,setFirstName]=useState("");
   const [lastName,setLastName]=useState("");
   const [userName,setUserName]=useState("");
   const [password,setPassword]=useState("");
+  const navigate=useNavigate();
   const handlefirstNameChange=(e)=>{
     setFirstName(e.target.value)
   }
@@ -38,13 +39,21 @@ export const Signup = () => {
         <InputBox onChange={handlePasswordChange} placeholder="123456" label={"Password"}/>
         <div className="pt-4">
             <Button onClick={async()=>{
-            const response =  await  axios.post("http://localhost:3000/api/v1/user/signup",{
+              try{
+            const response =await axios.post("http://localhost:3000/api/v1/user/signup",
+            {
                 userName,
                 firstName,
                 lastName,
                 password
               });
+              console.log(response);
               localStorage.setItem("token",response.data.token)
+              navigate("/dashboard")
+              }
+              catch(e){
+                console.log(e)
+              }
             }} label={"Sign up"}/>
         </div>
         <ButtomWarning label={"Alreaddy have an account"} buttonText={"Sign in"} to={"/signin"}/>
